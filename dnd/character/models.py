@@ -27,3 +27,27 @@ class ClassInformation(models.Model):
                                            related_name='info')
     table = models.TextField(verbose_name="Таблица уровней", blank=True)
     description = models.TextField(verbose_name='Описание')
+
+
+class Race(models.Model):
+    name = models.CharField(verbose_name='Расса')
+    size = models.FloatField(verbose_name='Размер')
+    speed = models.FloatField(verbose_name='Скорость')
+    weight = models.FloatField(verbose_name='Вес')
+    languages = models.CharField(max_length=255, blank=True, verbose_name='Языки')
+    abilities = ArrayField(models.CharField(), blank=True, verbose_name='Способности')
+    abil_score_inc = models.JSONField(blank=True, null=True, verbose_name='Очки усиления')
+    slug = models.SlugField(max_length=255, db_index=True, verbose_name='URL', unique=True)
+
+    def __str__(self):
+        return self.name
+
+    def get_absolute_url(self):
+        return reverse('race', kwargs={'race_slug': self.slug})
+
+
+class RaceInformation(models.Model):
+    name = models.CharField(verbose_name='Название')
+    race = models.OneToOneField(Race, on_delete=models.CASCADE, verbose_name='Расса',
+                                related_name='info')
+    description = models.TextField(verbose_name="Описание")

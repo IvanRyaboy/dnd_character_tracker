@@ -3,7 +3,8 @@ from django.http import HttpResponse, HttpResponseNotFound
 from django.views.generic import ListView
 from .models import *
 
-menu = [{'title': 'Классы', 'url_name': 'classes'},]
+menu = [{'title': 'Классы', 'url_name': 'classes'},
+        {'title': 'Рассы', 'url_name': 'races'},]
 
 
 def main_menu(request):
@@ -13,6 +14,12 @@ def main_menu(request):
 def classes(request):
     all_classes = CharacterClass.objects.all()
     return render(request, 'character/classes.html', {'classes': all_classes, 'menu': menu})
+
+
+def races(request):
+    all_races = Race.objects.all().order_by('name')
+    return render(
+        request, "character/races.html", {'races': all_races, 'menu': menu})
 
 
 def show_class(request, class_slug):
@@ -26,3 +33,16 @@ def show_class(request, class_slug):
         'menu': menu,
     }
     return render(request, 'character/class.html', context=context)
+
+
+def show_race(request, race_slug):
+    race = get_object_or_404(Race, slug=race_slug)
+    info = race.info
+
+    context = {
+        'race': race,
+        'info': info,
+        'title': race.name,
+        'menu': menu
+    }
+    return render(request, 'character/race.html', context=context)
