@@ -1,0 +1,7 @@
+{% extends 'character/base.html' %}
+
+{% block content %}
+{% for race in races %}
+    <h1><a href="{{ race.get_absolute_url }}">{{ race.name }}</a></h1>
+{% endfor %}
+{% endblock %}

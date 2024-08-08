@@ -1,0 +1,20 @@
+{% extends 'character/base.html' %}
+
+{% block content %}
+    <h1>{{ title }}</h1>
+    <h6>{{ spell.level }} уровень, {{ spell.spell_type }}</h6>
+    <p><strong>Время накладывания:</strong> {{ spell.time }}</p>
+    <p><strong>Дистанция:</strong> {{ spell.distance }}</p>
+    <p><strong>Компоненты:</strong> {{ spell.components }}</p>
+    <p><strong>Длительность:</strong> {{ spell.duration }}</p>
+    <strong>Классы:</strong>
+{% for class in spell.character_class.all %}
+    <li>{{ class.name }}</li>
+{% empty %}
+    No classes
+{% endfor %}
+
+{% if spell.description %}
+    <br>{{ spell.description }}
+{% endif %}
+{% endblock %}

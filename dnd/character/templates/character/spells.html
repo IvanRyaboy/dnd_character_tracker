@@ -1,0 +1,9 @@
+{% extends 'character/base.html' %}
+
+{% block content %}
+{% for spell in spells %}
+    <h4>[{{ spell.level }}]
+        <a href="{{ spell.get_absolute_url }}">{{ spell.name }}</a>
+        {{ spell.components }}</h4>
+{% endfor %}
+{% endblock %}
