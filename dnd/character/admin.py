@@ -30,3 +30,11 @@ class RaceInformationAdmin(admin.ModelAdmin):
     list_display = ('id', 'name')
     list_display_links = ('id', 'name')
     ordering = ['name']
+
+
+@admin.register(Spells)
+class SpellsAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name')
+    list_display_links = ('id', 'name')
+    ordering = ['name']
+    prepopulated_fields = {'slug': ('name', )}

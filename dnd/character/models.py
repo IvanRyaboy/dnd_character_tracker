@@ -51,3 +51,22 @@ class RaceInformation(models.Model):
     race = models.OneToOneField(Race, on_delete=models.CASCADE, verbose_name='Расса',
                                 related_name='info')
     description = models.TextField(verbose_name="Описание")
+
+
+class Spells(models.Model):
+    name = models.CharField(verbose_name='Название')
+    character_class = models.ManyToManyField(CharacterClass, related_name='spells', verbose_name='Класс')
+    level = models.IntegerField(verbose_name='Уровень', default=1)
+    spell_type = models.CharField(verbose_name='Тип', default='Очарование')
+    time = models.CharField(verbose_name='Время накладывания', blank=True)
+    distance = models.CharField(verbose_name="Дистанция", blank=True)
+    components = models.CharField(verbose_name='Компоненты', blank=True)
+    duration = models.CharField(verbose_name='Длительность', blank=True)
+    description = models.TextField(verbose_name='Описание')
+    slug = models.SlugField(max_length=255, unique=True, db_index=True, verbose_name='URL')
+
+    def __str__(self):
+        return self.name
+
+    def get_absolute_url(self):
+        return reverse('spell', kwargs={'spell_slug': self.slug})

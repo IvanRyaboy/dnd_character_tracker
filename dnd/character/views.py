@@ -22,6 +22,12 @@ def races(request):
         request, "character/races.html", {'races': all_races, 'menu': menu})
 
 
+def spells(request):
+    all_spells = Spells.objects.all().order_by('id')
+    return render(
+        request, 'character/spells.html', {'spells': all_spells, 'menu': menu})
+
+
 def show_class(request, class_slug):
     character_class = get_object_or_404(CharacterClass, slug=class_slug)
     info = character_class.info
@@ -46,3 +52,14 @@ def show_race(request, race_slug):
         'menu': menu
     }
     return render(request, 'character/race.html', context=context)
+
+
+def show_spell(request, spell_slug):
+    spell = get_object_or_404(Spells, slug=spell_slug)
+
+    context = {
+        'spell': spell,
+        'title': spell.name,
+        'menu': menu,
+    }
+    return render(request, 'character/spell.html', context=context)
