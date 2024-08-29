@@ -45,6 +45,9 @@ class Race(models.Model):
     def get_absolute_url(self):
         return reverse('race', kwargs={'race_slug': self.slug})
 
+    def get_purchase_features(self):
+        return reverse('purchase_features', kwargs={'race_slug': self.slug})
+
 
 class RaceInformation(models.Model):
     name = models.CharField(verbose_name='Название')
@@ -70,3 +73,13 @@ class Spells(models.Model):
 
     def get_absolute_url(self):
         return reverse('spell', kwargs={'spell_slug': self.slug})
+
+
+class Character(models.Model):
+    name = models.CharField(verbose_name='Имя')
+    ch_class = models.ForeignKey(CharacterClass, on_delete=models.CASCADE,
+                                 related_name='character', verbose_name='Класс')
+    characteristics = models.JSONField(default=dict)
+
+    def __str__(self):
+        return self.name

@@ -1,0 +1,96 @@
+<form method="post" id="purchase-form">
+    {% csrf_token %}
+        <style>
+                table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    margin: 20px 0;
+                }
+                th, td {
+                    border: 1px solid #dddddd;
+                    text-align: left;
+                    padding: 8px;
+                }
+                th {
+                    background-color: #f2f2f2;
+                }
+            </style>
+        <table>
+            <thead>
+                <tr>
+                    <th rowspan="4">Хар-ка</th>
+                    <th rowspan="2">СИЛ</th>
+                    <th rowspan="2">ЛОВ</th>
+                    <th rowspan="2">ТЕЛ</th>
+                    <th rowspan="2">ИНТ</th>
+                    <th rowspan="2">МДР</th>
+                    <th rowspan="2">ХАР</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Значение</td>
+                    <td>{{ form.strength }}</td>
+                    <td>{{ form.dexterity }}</td>
+                    <td>{{ form.physique }}</td>
+                    <td>{{ form.intelligence }}</td>
+                    <td>{{ form.wisdom }}</td>
+                    <td>{{ form.charisma }}</td>
+                </tr>
+                <tr>
+                    <td>Бонус расы</td>
+                    <td>{{ strength }}</td>
+                    <td>{{ dexterity }}</td>
+                    <td>{{ physique }}</td>
+                    <td>{{ intelligence }}</td>
+                    <td>{{ wisdom }}</td>
+                    <td>{{ charisma }}</td>
+                </tr>
+                <tr>
+                    <td>Модификатор</td>
+                    <td>{{ strength_mod }}</td>
+                    <td>{{ dexterity_mod }}</td>
+                    <td>{{ physique_mod }}</td>
+                    <td>{{ intelligence_mod }}</td>
+                    <td>{{ wisdom_mod }}</td>
+                    <td>{{ charisma_mod }}</td>
+                </tr>
+                <tr>
+                    <td>Итого</td>
+                    <td>{{ total_strength }}</td>
+                    <td>{{ total_dexterity }}</td>
+                    <td>{{ total_physique }}</td>
+                    <td>{{ total_intelligence }}</td>
+                    <td>{{ total_wisdom }}</td>
+                    <td>{{ total_charisma }}</td>
+                </tr>
+                <tr>
+                    <td>Очки</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+    <button type="submit">Закупить характеристики</button>
+</form>
+<script>
+    document.getElementById('id_ch_class').addEventListener('change', function() {
+        const classId = this.value;
+
+        fetch(/get_characteristics/${classId}/)
+            .then(response => response.json())
+            .then(data => {
+                // Обновляем значения характеристик
+                document.getElementById('id_strength').value = data.strength;
+                document.getElementById('id_dexterity').value = data.dexterity;
+                document.getElementById('id_physique').value = data.physique;
+                document.getElementById('id_intelligence').value = data.intelligence;
+                document.getElementById('id_wisdom').value = data.wisdom;
+                document.getElementById('id_charisma').value = data.charisma;
+            });
+    });
+</script>

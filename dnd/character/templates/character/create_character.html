@@ -1,7 +1,10 @@
 {% extends 'character/base.html' %}
 
 {% block content %}
-{% for r in race %}
-{{ r.name }}
-{% endfor %}
+<form method="post">
+    {% csrf_token %}
+    {{ base_form }}
+    {{ surviving_form }}
+    <input type="submit" value="Submit">
+</form>
 {% endblock %}

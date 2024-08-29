@@ -5,33 +5,53 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="093ffa7c-f360-47ef-a9c7-3d9016f2f3fc" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dnd/character/forms.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dnd/character/functions.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dnd/character/migrations/0011_alter_raceinformation_race_character.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dnd/character/static/character/css/styles.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dnd/character/templates/character/choose_race.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dnd/character/templates/character/purchase_features.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dnd/character/templates/character/success.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dnd/character/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/dnd/character/admin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dnd/character/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/dnd/character/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dnd/character/templates/character/create_character.html" beforeDir="false" afterPath="$PROJECT_DIR$/dnd/character/templates/character/create_character.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dnd/character/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/dnd/character/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dnd/character/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/dnd/character/views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+        <option value="HTML File" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 3
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 3
+}</component>
   <component name="ProjectId" id="2kN6ct9TEcw7LAKYsIx04suOODC" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "master",
-    "ignore.virus.scanning.warn.message": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;crate__character&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager">
     <configuration name="main" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="dnd_character_tracker" />
@@ -73,5 +93,16 @@
       <updated>1723111769937</updated>
     </task>
     <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
 </project>

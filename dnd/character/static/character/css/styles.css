@@ -1,0 +1,79 @@
+.character-sheet {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+  font-family: Arial, sans-serif;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.section {
+  margin-bottom: 2rem;
+}
+
+.section h2 {
+  margin-bottom: 1rem;
+}
+
+.ability-scores {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 1rem;
+}
+
+.ability-score {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.ability-score input[type="number"] {
+  width: 80px;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+  text-align: center;
+}
+
+.hit-points-block {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.hit-points-block .input-group {
+  display: flex;
+  align-items: center;
+}
+
+.hit-points-block input[type="number"] {
+  width: 80px;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.hit-points-block .slash {
+  margin: 0 0.5rem;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.equipment-list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 1rem;
+}
+
+.equipment-item input[type="text"] {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+}
