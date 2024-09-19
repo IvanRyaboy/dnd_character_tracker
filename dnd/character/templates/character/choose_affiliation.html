@@ -1,0 +1,9 @@
+{% extends 'character/base.html' %}
+
+{% block content %}
+<form method="post">
+    {% csrf_token %}
+    {{ affiliation_form.as_p }}
+    <button type="submit">Далее</button>
+</form>
+{% endblock %}

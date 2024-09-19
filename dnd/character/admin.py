@@ -42,7 +42,13 @@ class SpellsAdmin(admin.ModelAdmin):
 
 @admin.register(Character)
 class CharacterAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name')
-    list_display_links = ('id', 'name')
+    list_display = ('id',)
+    list_display_links = ('id',)
     ordering = ['id']
 
+
+@admin.register(Skills)
+class SkillsAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name')
+    list_display_links = ('id', 'name')
+    ordering = ['name']

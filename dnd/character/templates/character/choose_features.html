@@ -75,22 +75,15 @@
                 </tr>
             </tbody>
         </table>
+    {% if form.non_field_errors %}
+        <ul class="errorlist">
+            {% for error in form.non_field_errors %}
+                <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+
+
     <button type="submit">Закупить характеристики</button>
 </form>
-<script>
-    document.getElementById('id_ch_class').addEventListener('change', function() {
-        const classId = this.value;
-
-        fetch(/get_characteristics/${classId}/)
-            .then(response => response.json())
-            .then(data => {
-                // Обновляем значения характеристик
-                document.getElementById('id_strength').value = data.strength;
-                document.getElementById('id_dexterity').value = data.dexterity;
-                document.getElementById('id_physique').value = data.physique;
-                document.getElementById('id_intelligence').value = data.intelligence;
-                document.getElementById('id_wisdom').value = data.wisdom;
-                document.getElementById('id_charisma').value = data.charisma;
-            });
-    });
-</script>

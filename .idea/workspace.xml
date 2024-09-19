@@ -5,19 +5,38 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="093ffa7c-f360-47ef-a9c7-3d9016f2f3fc" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/dnd/character/forms.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dnd/character/functions.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dnd/character/migrations/0011_alter_raceinformation_race_character.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dnd/character/static/character/css/styles.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dnd/character/templates/character/choose_race.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dnd/character/templates/character/purchase_features.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dnd/character/templates/character/success.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dnd/character/migrations/0002_character_characteristics_character_modifiers_and_more.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dnd/character/migrations/0003_remove_characterclass_skills_and_more.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dnd/character/migrations/0004_characterclass_skills.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dnd/character/migrations/0005_remove_characterclass_skills_skills.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dnd/character/migrations/0006_remove_character_skills.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dnd/character/migrations/0007_character_skills_character_spells.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dnd/character/templates/character/character.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dnd/character/templates/character/characters.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dnd/character/templates/character/choose_affiliation.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dnd/character/templates/character/choose_information.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dnd/character/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/dnd/character/admin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dnd/character/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/dnd/character/forms.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dnd/character/functions.py" beforeDir="false" afterPath="$PROJECT_DIR$/dnd/character/functions.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dnd/character/migrations/0001_initial.py" beforeDir="false" afterPath="$PROJECT_DIR$/dnd/character/migrations/0001_initial.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dnd/character/migrations/0002_remove_characterclass_spells_classinformation_and_more.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dnd/character/migrations/0003_spells_level.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dnd/character/migrations/0004_spells_spell_type_alter_spells_distance.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dnd/character/migrations/0005_spells_slug.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dnd/character/migrations/0006_alter_spells_slug.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dnd/character/migrations/0007_characterclass_slug_race_slug.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dnd/character/migrations/0008_alter_characterclass_slug_alter_race_slug.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dnd/character/migrations/0009_alter_classinformation_character_class.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dnd/character/migrations/0010_classinformation_table.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dnd/character/migrations/0011_alter_raceinformation_race_character.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/dnd/character/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/dnd/character/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dnd/character/templates/character/create_character.html" beforeDir="false" afterPath="$PROJECT_DIR$/dnd/character/templates/character/create_character.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dnd/character/templates/character/create_character.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dnd/character/templates/character/purchase_features.html" beforeDir="false" afterPath="$PROJECT_DIR$/dnd/character/templates/character/choose_features.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dnd/character/templates/character/success.html" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/dnd/character/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/dnd/character/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dnd/character/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/dnd/character/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dnd/dnd/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/dnd/dnd/settings.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -39,21 +58,26 @@
   &quot;associatedIndex&quot;: 3
 }</component>
   <component name="ProjectId" id="2kN6ct9TEcw7LAKYsIx04suOODC" />
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
+    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
     &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
+    &quot;Python.runserver.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;crate__character&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/ivanr/PycharmProjects/dnd_character_tracker/dnd/manage.py&quot;
   }
 }</component>
   <component name="RunManager">
-    <configuration name="main" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
+    <configuration name="runserver" type="PythonConfigurationType" factoryName="Python">
       <module name="dnd_character_tracker" />
       <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -66,8 +90,8 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/main.py" />
-      <option name="PARAMETERS" value="" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/dnd/manage.py" />
+      <option name="PARAMETERS" value="runserver" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -104,5 +128,8 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
   </component>
 </project>

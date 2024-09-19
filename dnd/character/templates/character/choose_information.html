@@ -3,8 +3,7 @@
 {% block content %}
 <form method="post">
     {% csrf_token %}
-    {{ base_form }}
-    {{ surviving_form }}
-    <input type="submit" value="Submit">
+    {{ information_form.as_p }}
+    <button type="submit">Далее</button>
 </form>
 {% endblock %}

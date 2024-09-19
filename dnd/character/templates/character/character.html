@@ -1,0 +1,15 @@
+{% extends 'character/base.html' %}
+
+{% block content %}
+    <h1>{{ character.character_name }}</h1>
+
+    Раса: {{ character.race }}
+    Class: {{ character.character_class }}
+    Alignment: {{ character.alignment }}
+    Background: {{ character.background }}
+    Player name: {{ character.player_name }}
+    Level: {{ character.level }}
+    Exp: {{ character.experience }}
+
+{{ info.description|safe }}
+{% endblock %}

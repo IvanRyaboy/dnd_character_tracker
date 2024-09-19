@@ -1,16 +1,10 @@
 import math
-import json
-from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponse, HttpResponseNotFound, HttpResponseRedirect, JsonResponse
-from django.views.generic import ListView
-from .models import *
+from django.shortcuts import render, get_object_or_404, redirect
 from .forms import *
 
 menu = [{'title': 'Классы', 'url_name': 'classes'},
         {'title': 'Рассы', 'url_name': 'races'},
-        {'title': 'Заклинания', 'url_name': 'spells'},
-        {'title': 'Создание персонажа', 'url_name': 'create_character'},
-        {'title': 'Закуп характеристик', 'url_name': 'choose_race'}]
+        {'title': 'Заклинания', 'url_name': 'spells'},]
 
 
 def main_menu(request):
@@ -71,42 +65,57 @@ def show_spell(request, spell_slug):
     return render(request, 'character/spell.html', context=context)
 
 
-def create_character(request):
-    race = Race.objects.all()
-    character_class = CharacterClass.objects.all()
+def choose_affiliation(request):
     if request.method == "POST":
-        base_form = CharacterForm(request.POST, prefix='base')
-        surviving_form = SurvivingForm(request.POST, prefix='surviving')
-        if all([base_form.is_valid(), surviving_form.is_valid()]):
-            return render(request, 'character/success.html')
+        affiliation_form = AffiliationForm(request.POST)
+
+        if affiliation_form.is_valid():
+            character = affiliation_form.save(commit=False)
+            character.save()
+
+            context = {
+                'affiliation_form': affiliation_form,
+                'menu': menu,
+            }
+            return redirect('choose_information', character_id=character.id)
     else:
-        base_form = CharacterForm()
-        surviving_form = SurvivingForm()
+        affiliation_form = AffiliationForm()
 
     context = {
-        'race': race,
-        'class': character_class,
-        'title': 'Создание персонажа',
-        'base_form': base_form,
-        'surviving_form': surviving_form,
+        'affiliation_form': affiliation_form,
         'menu': menu,
     }
-    return render(request, 'character/create_character.html', context=context)
+    return render(request, 'character/choose_affiliation.html', context=context)
 
 
-def choose_race_for_features(request):
-    races = Race.objects.all()
+def choose_information(request, character_id):
+    character = get_object_or_404(Character, id=character_id)
+    if request.method == "POST":
+        information_form = InformationForm(request.POST, instance=character)
 
+        if information_form.is_valid():
+            character.experience = calculate_experience(information_form.cleaned_data['level'])
+            character.proficiency_bonus = calculate_proficiency_bonus(information_form.cleaned_data['level'])
+            information_form.save()
+            context = {
+                'information_form': information_form,
+                'menu': menu
+            }
+            return redirect('choose_features', character_id=character.id)
+    else:
+        information_form = InformationForm(instance=character)
     context = {
-        'menu': menu,
-        'races': races
+        'information_form': information_form,
+        'menu': menu
     }
-    return render(request, "character/choose_race.html", context=context)
+    return render(request, 'character/choose_information.html', context=context)
 
 
-def purchase_features(request, race_slug):
-    race_instance = get_object_or_404(Race, slug=race_slug)
-    abil_score_inc_dict = race_instance.abil_score_inc
+def choose_features(request, character_id):
+    character = get_object_or_404(Character, id=character_id)
+    race = Race.objects.get(name=character.race)
+    abil_score_inc_dict = race.abil_score_inc
+    character_class = CharacterClass.objects.get(name=character.character_class)
 
     strength = abil_score_inc_dict.get('Сила', 0)
     dexterity = abil_score_inc_dict.get('Ловкость', 0)
@@ -132,29 +141,23 @@ def purchase_features(request, race_slug):
             wisdom_mod = math.floor((total_wisdom - 10) / 2)
             charisma_mod = math.floor((total_charisma - 10) / 2)
 
-            context = {
-                'form': form,
-                'total_strength': total_strength,
-                'total_dexterity': total_dexterity,
-                'total_physique': total_physique,
-                'total_intelligence': total_intelligence,
-                'total_wisdom': total_wisdom,
-                'total_charisma': total_charisma,
-                'strength_mod': strength_mod,
-                'dexterity_mod': dexterity_mod,
-                'physique_mod': physique_mod,
-                'intelligence_mod': intelligence_mod,
-                'wisdom_mod': wisdom_mod,
-                'charisma_mod': charisma_mod,
-                'strength': strength,
-                'dexterity': dexterity,
-                'physique': physique,
-                'intelligence': intelligence,
-                'wisdom': wisdom,
-                'charisma': charisma,
-            }
+            characteristics = {'Сила': total_strength, 'Ловкость': total_dexterity,
+                               'Телосложение': total_physique, 'Интеллект': total_intelligence,
+                               'Мудрость': total_wisdom, 'Харизма': total_charisma}
 
-            return render(request, 'character/purchase_features.html', context=context)
+            modifiers = {'Сила': strength_mod, 'Ловкость': dexterity_mod,
+                         'Телосложение': physique_mod, 'Интеллект': intelligence_mod,
+                         'Мудрость': wisdom_mod, 'Харизма': charisma_mod}
+
+            saving_throws = calculate_saving_throws(modifiers, character_class.saving_throws,
+                                                    character.proficiency_bonus)
+
+            character.characteristics = characteristics
+            character.modifiers = modifiers
+            character.saving_throws = saving_throws
+            character.save()
+
+            return redirect('spell', spell_slug='geroizm')
     else:
         form = PurchaseForm(prefix='form')
 
@@ -180,11 +183,26 @@ def purchase_features(request, race_slug):
         'charisma': charisma,
     }
 
-    return render(request, 'character/purchase_features.html', context=context)
+    return render(request, 'character/choose_features.html', context=context)
 
 
-def get_characteristics(request, class_slug):
-    character_class = CharacterClass.objects.get(slug=class_slug)
-    characteristics = character_class.characteristics  # Предполагается, что это JSON
+def characters(request):
+    characters_list = Character.objects.all()
 
-    return JsonResponse(characteristics)
+    context = {
+        "menu": menu,
+        "characters": characters_list,
+    }
+
+    return render(request, 'character/characters.html', context=context)
+
+
+def show_character(request, character_id):
+    character = get_object_or_404(Character, pk=character_id)
+
+    context = {
+        'menu': menu,
+        'character': character
+    }
+
+    return render(request, 'character/character.html', context=context)

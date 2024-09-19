@@ -1,6 +1,8 @@
 from django.db import models
 from django.urls import reverse
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.contrib.postgres.fields import ArrayField, JSONField
+from .functions import get_alignment_list, get_backgrounds_list
 
 
 class CharacterClass(models.Model):
@@ -10,8 +12,7 @@ class CharacterClass(models.Model):
     armor = models.TextField(verbose_name="Броня")
     weapons = models.TextField(verbose_name='Оружие')
     tools = models.TextField(verbose_name='Инструменты')
-    skills = ArrayField(models.CharField(), blank=True, verbose_name='Навыки')
-    spellcasting_ability = models.CharField(blank=True)
+    spellcasting_ability = models.CharField(blank=True, verbose_name='Базовая характеристика')
     slug = models.SlugField(max_length=255, db_index=True, verbose_name='URL', unique=True)
 
     def __str__(self):
@@ -75,11 +76,39 @@ class Spells(models.Model):
         return reverse('spell', kwargs={'spell_slug': self.slug})
 
 
-class Character(models.Model):
-    name = models.CharField(verbose_name='Имя')
-    ch_class = models.ForeignKey(CharacterClass, on_delete=models.CASCADE,
-                                 related_name='character', verbose_name='Класс')
-    characteristics = models.JSONField(default=dict)
+class Skills(models.Model):
+    name = models.CharField(verbose_name='Название')
+    about = models.TextField(verbose_name='Описание')
+    character_class = models.ManyToManyField(CharacterClass, related_name='skills', verbose_name='Класс')
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        ordering = ['name']
+
+
+class Character(models.Model):
+    alignments = get_alignment_list()
+    backgrounds = get_backgrounds_list()
+
+    character_class = models.ForeignKey(CharacterClass, on_delete=models.CASCADE,
+                                        related_name='character_class', verbose_name='Класс')
+    race = models.ForeignKey(Race, on_delete=models.CASCADE,
+                             related_name='character_race', verbose_name='Раса')
+    character_name = models.CharField(max_length=25, verbose_name='Имя персонажа', blank=True)
+    background = models.CharField(max_length=25, verbose_name='Предыстория', blank=True, choices=backgrounds)
+    alignment = models.CharField(max_length=25, verbose_name='Мировоззрение', blank=True, choices=alignments)
+    player_name = models.CharField(max_length=25, verbose_name='Имя игрока', blank=True)
+    level = models.IntegerField(validators=[MaxValueValidator(20), MinValueValidator(1)],
+                                verbose_name='Уровень', default=1)
+    experience = models.IntegerField(verbose_name='Опыт', default=1)
+    characteristics = models.JSONField(blank=True, null=True, verbose_name='Характеристики')
+    modifiers = models.JSONField(blank=True, null=True, verbose_name='Модификаторы')
+    proficiency_bonus = models.IntegerField(verbose_name='Бонус мастерства', default=2, blank=True)
+    saving_throws = models.JSONField(verbose_name='Спасброски', blank=True, null=True)
+    skills = models.ManyToManyField(Skills, related_name='character', verbose_name='Навыки')
+    spells = models.ManyToManyField(Spells, related_name='character', verbose_name='Заклинания')
+
+    def get_absolute_url(self):
+        return reverse('show_character', kwargs={'character_id': self.pk})

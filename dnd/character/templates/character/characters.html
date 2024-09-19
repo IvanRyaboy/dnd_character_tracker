@@ -1,0 +1,7 @@
+{% extends 'character/base.html' %}
+
+{% block content %}
+{% for character in characters %}
+    <h1><a href="{{ character.get_absolute_url }}">{{ character.character_name }}</a></h1>
+{% endfor %}
+{% endblock %}

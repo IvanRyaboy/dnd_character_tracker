@@ -40,5 +40,102 @@ def get_alignment_list():
     return alignment_list
 
 
-def characteristic_distribution():
-    pass
+def translate_background(background):
+    backgrounds = get_backgrounds_list()
+    for background_en, background_ru in backgrounds:
+        if background_en == background:
+            return background_ru
+    return 'Отшельник'
+
+
+def translate_alignment(alignment):
+    alignments = get_alignment_list()
+    for alignment_en, alignment_ru in alignments:
+        if alignment_en == alignment:
+            return alignment_ru
+    return 'Истинно нейтрильный'
+
+
+def calculate_experience(level):
+    level_to_exp = {
+        1: 0,
+        2: 300,
+        3: 900,
+        4: 2700,
+        5: 6500,
+        6: 14000,
+        7: 23000,
+        8: 34000,
+        9: 48000,
+        10: 64000,
+        11: 85000,
+        12: 100000,
+        13: 120000,
+        14: 140000,
+        15: 165000,
+        16: 195000,
+        17: 225000,
+        18: 265000,
+        19: 305000,
+        20: 355000,
+    }
+    return level_to_exp.get(level)
+
+
+def calculate_proficiency_bonus(level):
+    proficiency_bonus = {
+        1: 2,
+        2: 2,
+        3: 2,
+        4: 2,
+        5: 3,
+        6: 3,
+        7: 3,
+        8: 3,
+        9: 4,
+        10: 4,
+        11: 4,
+        12: 4,
+        13: 5,
+        14: 5,
+        15: 5,
+        16: 5,
+        17: 6,
+        18: 6,
+        19: 6,
+        20: 6,
+    }
+    return proficiency_bonus.get(level)
+
+
+def calculate_saving_throws(modifiers, classes_saving_throws, proficiency_bonus):
+    if 'Сила' in classes_saving_throws:
+        strength = modifiers.get('Сила') + proficiency_bonus
+    else:
+        strength = modifiers.get('Сила')
+    if 'Ловкость' in classes_saving_throws:
+        dexterity = modifiers.get('Ловкость') + proficiency_bonus
+    else:
+        dexterity = modifiers.get('Ловкость')
+    if 'Телосложение' in classes_saving_throws:
+        physique = modifiers.get('Телосложение') + proficiency_bonus
+    else:
+        physique = modifiers.get('Телосложение')
+    if 'Интеллект' in classes_saving_throws:
+        intelligence = modifiers.get('Интеллект') + proficiency_bonus
+    else:
+        intelligence = modifiers.get('Интеллект')
+    if 'Мудрость' in classes_saving_throws:
+        wisdom = modifiers.get('Мудрость') + proficiency_bonus
+    else:
+        wisdom = modifiers.get('Мудрость')
+    if 'Харизма' in classes_saving_throws:
+        charisma = modifiers.get('Харизма') + proficiency_bonus
+    else:
+        charisma = modifiers.get('Харизма')
+
+    saving_throws = {'Сила': strength, 'Ловкость': dexterity,
+                     'Телосложение': physique, 'Интеллект': intelligence,
+                     'Мудрость': wisdom, 'Харизма': charisma}
+
+    return saving_throws
