@@ -52,3 +52,17 @@ class SkillsAdmin(admin.ModelAdmin):
     list_display = ('id', 'name')
     list_display_links = ('id', 'name')
     ordering = ['name']
+
+
+@admin.register(Weapons)
+class WeaponsAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name')
+    list_display_links = ('id', 'name')
+    ordering = ['type', 'name']
+
+
+@admin.register(Armor)
+class ArmorAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name')
+    list_display_links = ('id', 'name')
+    ordering = ['type']

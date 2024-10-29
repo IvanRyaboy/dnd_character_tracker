@@ -13,6 +13,7 @@ urlpatterns = [
     path('choose_affiliation/', choose_affiliation, name='choose_affiliation'),
     path('choose_information/<int:character_id>/', choose_information, name='choose_information'),
     path('choose_features/<int:character_id>/', choose_features, name='choose_features'),
+    path('choose_items/<int:character_id>/', choose_items, name='choose_items'),
     path('characters/', characters, name='characters'),
-    path('characters/<int:character_id>/', show_character, name='show_character')
+    path('characters/<int:character_id>/', show_character, name='show_character'),
 ]

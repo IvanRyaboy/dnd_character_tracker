@@ -1,4 +1,6 @@
 import math
+
+from django.http import HttpResponseNotFound
 from django.shortcuts import render, get_object_or_404, redirect
 from .forms import *
 
@@ -65,6 +67,27 @@ def show_spell(request, spell_slug):
     return render(request, 'character/spell.html', context=context)
 
 
+def weapons(request):
+    all_weapons = Weapons.objects.all()
+
+    context = {
+        'menu': menu,
+        'weapons': all_weapons
+    }
+    return render(request, 'character/weapons.html', context=context)
+
+
+def armor(request):
+    all_armor = Armor.objects.all()
+
+    context = {
+        'menu': menu,
+        'armor': all_armor
+    }
+
+    return render(request, 'character/armor.html', context=context)
+
+
 def choose_affiliation(request):
     if request.method == "POST":
         affiliation_form = AffiliationForm(request.POST)
@@ -92,16 +115,22 @@ def choose_information(request, character_id):
     character = get_object_or_404(Character, id=character_id)
     if request.method == "POST":
         information_form = InformationForm(request.POST, instance=character)
+        selected_skills = information_form.data.getlist('skills')
+        max_skills = get_max_skills(character)
 
-        if information_form.is_valid():
-            character.experience = calculate_experience(information_form.cleaned_data['level'])
-            character.proficiency_bonus = calculate_proficiency_bonus(information_form.cleaned_data['level'])
-            information_form.save()
-            context = {
-                'information_form': information_form,
-                'menu': menu
-            }
-            return redirect('choose_features', character_id=character.id)
+        try:
+            if len(selected_skills) > max_skills:
+                raise ValidationError(f"Вы не можете выбрать более {max_skills} навыков")
+            if len(selected_skills) < max_skills:
+                raise ValidationError(f"Выберите {max_skills} навыка")
+
+            if information_form.is_valid():
+                character.experience = calculate_experience(information_form.cleaned_data['level'])
+                character.proficiency_bonus = calculate_proficiency_bonus(information_form.cleaned_data['level'])
+                information_form.save()
+                return redirect('choose_features', character_id=character.id)
+        except ValidationError as e:
+            information_form.add_error('skills', e)
     else:
         information_form = InformationForm(instance=character)
     context = {
@@ -157,7 +186,7 @@ def choose_features(request, character_id):
             character.saving_throws = saving_throws
             character.save()
 
-            return redirect('spell', spell_slug='geroizm')
+            return redirect('choose_items', character_id=character.id)
     else:
         form = PurchaseForm(prefix='form')
 
@@ -184,6 +213,67 @@ def choose_features(request, character_id):
     }
 
     return render(request, 'character/choose_features.html', context=context)
+
+
+def choose_items(request, character_id):
+    character = get_object_or_404(Character, id=character_id)
+    money = convert_money(character.money)
+
+    all_armor = Armor.objects.all()
+    all_weapons = Weapons.objects.all()
+
+    if request.method == 'POST':
+        selected_armors = request.POST.getlist('armor')
+        selected_weapons = request.POST.getlist('weapons')
+
+        total_cost = 0
+
+        for armor_id in selected_armors:
+            chosen_armor = Armor.objects.get(pk=armor_id)
+            total_cost += chosen_armor.price
+        for weapon_id in selected_weapons:
+            chosen_weapon = Weapons.objects.get(pk=weapon_id)
+            total_cost += chosen_weapon.price
+
+        total_price = convert_money(total_cost)
+
+        if total_cost > character.money:
+            return HttpResponseNotFound('Слишком большая стоимость. Попробуйте закупть другие предметы')
+        else:
+
+            form = ItemsForm(request.POST, prefix='form')
+
+            if form.is_valid():
+
+                form.save()
+
+                context = {
+                    'form': form,
+                    'menu': menu,
+                    'character': character,
+                    'total_cost': total_price,
+                    'armors': all_armor,
+                    'weapons': all_weapons,
+                    'gold': money.get('gold'),
+                    'silver': money.get('silver'),
+                    'copper': money.get('copper')
+                }
+                return render(request, 'character/choose_items.html', context=context)
+    else:
+        form = ItemsForm()
+
+    context = {
+        'menu': menu,
+        'form': form,
+        'character': character,
+        'armors': all_armor,
+        'weapons': all_weapons,
+        'gold': money.get('gold'),
+        'silver': money.get('silver'),
+        'copper': money.get('copper')
+    }
+
+    return render(request, 'character/choose_items.html', context=context)
 
 
 def characters(request):

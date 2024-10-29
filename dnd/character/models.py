@@ -1,8 +1,10 @@
+import random
+
 from django.db import models
 from django.urls import reverse
 from django.core.validators import MaxValueValidator, MinValueValidator
-from django.contrib.postgres.fields import ArrayField, JSONField
-from .functions import get_alignment_list, get_backgrounds_list
+from django.contrib.postgres.fields import ArrayField
+from .functions import convert_money, get_alignment_list, get_backgrounds_list
 
 
 class CharacterClass(models.Model):
@@ -14,6 +16,7 @@ class CharacterClass(models.Model):
     tools = models.TextField(verbose_name='Инструменты')
     spellcasting_ability = models.CharField(blank=True, verbose_name='Базовая характеристика')
     slug = models.SlugField(max_length=255, db_index=True, verbose_name='URL', unique=True)
+    quantity_of_spells = models.JSONField(blank=True, null=True, verbose_name='Количество заклинаний от уровня')
 
     def __str__(self):
         return self.name
@@ -88,6 +91,63 @@ class Skills(models.Model):
         ordering = ['name']
 
 
+class Weapons(models.Model):
+    name = models.CharField(max_length=35, verbose_name='Название')
+    type = models.CharField(max_length=25, verbose_name='Тип')
+    price = models.IntegerField(validators=[MinValueValidator(0)], verbose_name='Стоимость')
+    damage = models.CharField(max_length=5, verbose_name='Урон')
+    damage_type = models.CharField(max_length=25, verbose_name='Тип урона')
+    weight = models.IntegerField(verbose_name='Вес')
+    property = models.JSONField(blank=True, null=True, verbose_name='Свойства')
+    description = models.TextField(verbose_name='Описание')
+
+    def __str__(self):
+        return self.name
+
+    def show_price(self):
+        money = convert_money(self.price)
+        string = ""
+        for m in money.keys():
+            if money.get(m) != 0:
+                string += str(money.get(m)) + ' ' + m
+        return string
+
+    def get_absolute_url(self):
+        return reverse('weapon', kwargs={'spell_id': self.pk})
+
+    class Meta:
+        ordering = ['name']
+
+
+class Armor(models.Model):
+    name = models.CharField(max_length=25, verbose_name='Название')
+    type = models.CharField(max_length=35, verbose_name='Тип')
+    armor_class = models.CharField(verbose_name='Класс защиты')
+    price = models.IntegerField(verbose_name='Стоимость')
+    weight = models.IntegerField(verbose_name='Вес')
+    stealth_interference = models.BooleanField(default=True, verbose_name='Помеха на Скрытность')
+    requirement_strength = models.IntegerField(verbose_name='Требование к Силе')
+    on_off = models.CharField(verbose_name='Надевание/Снятие')
+    description = models.TextField(verbose_name='Описание')
+
+    def __str__(self):
+        return self.name
+
+    def show_price(self):
+        money = convert_money(self.price)
+        string = ""
+        for m in money.keys():
+            if money.get(m) != 0:
+                string += str(money.get(m)) + ' ' + m
+        return string
+
+    def get_absolute_url(self):
+        return reverse('armor', kwargs={'armor_id': self.pk})
+
+    class Meta:
+        ordering = ['name']
+
+
 class Character(models.Model):
     alignments = get_alignment_list()
     backgrounds = get_backgrounds_list()
@@ -96,19 +156,23 @@ class Character(models.Model):
                                         related_name='character_class', verbose_name='Класс')
     race = models.ForeignKey(Race, on_delete=models.CASCADE,
                              related_name='character_race', verbose_name='Раса')
-    character_name = models.CharField(max_length=25, verbose_name='Имя персонажа', blank=True)
-    background = models.CharField(max_length=25, verbose_name='Предыстория', blank=True, choices=backgrounds)
-    alignment = models.CharField(max_length=25, verbose_name='Мировоззрение', blank=True, choices=alignments)
-    player_name = models.CharField(max_length=25, verbose_name='Имя игрока', blank=True)
+    character_name = models.CharField(max_length=25, verbose_name='Имя персонажа', blank=True, null=True)
+    background = models.CharField(max_length=25, verbose_name='Предыстория', blank=True, choices=backgrounds, null=True)
+    alignment = models.CharField(max_length=25, verbose_name='Мировоззрение', blank=True, choices=alignments, null=True)
+    player_name = models.CharField(max_length=25, verbose_name='Имя игрока', blank=True, null=True)
     level = models.IntegerField(validators=[MaxValueValidator(20), MinValueValidator(1)],
-                                verbose_name='Уровень', default=1)
-    experience = models.IntegerField(verbose_name='Опыт', default=1)
+                                verbose_name='Уровень', default=1, null=True)
+    experience = models.IntegerField(verbose_name='Опыт', default=1, null=True)
     characteristics = models.JSONField(blank=True, null=True, verbose_name='Характеристики')
     modifiers = models.JSONField(blank=True, null=True, verbose_name='Модификаторы')
-    proficiency_bonus = models.IntegerField(verbose_name='Бонус мастерства', default=2, blank=True)
+    proficiency_bonus = models.IntegerField(verbose_name='Бонус мастерства', default=2, blank=True, null=True)
     saving_throws = models.JSONField(verbose_name='Спасброски', blank=True, null=True)
-    skills = models.ManyToManyField(Skills, related_name='character', verbose_name='Навыки')
-    spells = models.ManyToManyField(Spells, related_name='character', verbose_name='Заклинания')
+    skills = models.ManyToManyField(Skills, related_name='character', verbose_name='Навыки', null=True)
+    spells = models.ManyToManyField(Spells, related_name='character', verbose_name='Заклинания', null=True)
+    money = models.IntegerField(validators=[MinValueValidator(0)], verbose_name="Деньги(медные монеты)",
+                                default=random.randint(1, 4) * 3000, null=True)
+    weapons = models.ManyToManyField(Weapons, related_name='character', verbose_name='Оружие', blank=True, null=True)
+    armor = models.ManyToManyField(Armor, related_name='character', verbose_name='Доспехи', blank=True, null=True)
 
     def get_absolute_url(self):
         return reverse('show_character', kwargs={'character_id': self.pk})

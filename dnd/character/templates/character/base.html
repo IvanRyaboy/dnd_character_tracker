@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>{{ title }}</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'character/css/styles.css' %}" type="text/css">
 </head>
 <body>
 {% block mainmenu %}

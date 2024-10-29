@@ -14,10 +14,22 @@ class AffiliationForm(forms.ModelForm):
 
 
 class InformationForm(forms.ModelForm):
+    skills = forms.ModelMultipleChoiceField(queryset=Skills.objects.none(),
+                                            required=False)
+    spells = forms.ModelMultipleChoiceField(queryset=Spells.objects.none(),
+                                            required=False)
+
+    def __init__(self, *args, **kwargs):
+        character = kwargs.pop('instance', None)
+        super(InformationForm, self).__init__(*args, **kwargs)
+
+        if character is not None:
+            self.fields['skills'].queryset = Skills.objects.filter(character_class=character.character_class)
+            self.fields['spells'].queryset = Spells.objects.filter(character_class=character.character_class)
 
     class Meta:
         model = Character
-        fields = ['character_name', 'background', 'alignment', 'player_name', 'level', 'skills']
+        fields = ['character_name', 'background', 'alignment', 'player_name', 'level', 'skills', 'spells']
 
 
 class PurchaseForm(forms.Form):
@@ -42,3 +54,15 @@ class PurchaseForm(forms.Form):
             raise ValidationError("Пожалуйста, используйте все 27 очков характеристик.")
 
         return cleaned_data
+
+
+class ItemsForm(forms.ModelForm):
+    armor = forms.ModelMultipleChoiceField(queryset=Armor.objects.all(),
+                                           required=False, widget=forms.CheckboxSelectMultiple)
+    weapons = forms.ModelMultipleChoiceField(queryset=Weapons.objects.all(),
+                                             required=False, widget=forms.CheckboxSelectMultiple)
+
+    class Meta:
+        model = Character
+        fields = ['armor', 'weapons']
+

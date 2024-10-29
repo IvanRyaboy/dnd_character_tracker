@@ -139,3 +139,23 @@ def calculate_saving_throws(modifiers, classes_saving_throws, proficiency_bonus)
                      'Мудрость': wisdom, 'Харизма': charisma}
 
     return saving_throws
+
+
+def get_max_skills(character):
+    if character.character_class.name in ['Бард', 'Следопыт']:
+        return 3
+    if character.character_class.name == 'Плут':
+        return 4
+    else:
+        return 2
+
+
+def convert_money(copper):
+    gold = copper // 100
+    silver = (copper % 100) // 10
+    copper = copper % 10
+    money = {'gold': gold, 'silver': silver, 'copper': copper}
+    return money
+
+def calculate_price():
+    pass
