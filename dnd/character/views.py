@@ -1,6 +1,7 @@
 import math
 
-from django.http import HttpResponseNotFound
+from django.contrib.auth import authenticate, login, logout
+from django.http import HttpResponseNotFound, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect
 from .forms import *
 
@@ -94,6 +95,7 @@ def choose_affiliation(request):
 
         if affiliation_form.is_valid():
             character = affiliation_form.save(commit=False)
+            character.player = get_object_or_404(Player, user=request.user)
             character.save()
 
             context = {
@@ -127,6 +129,7 @@ def choose_information(request, character_id):
             if information_form.is_valid():
                 character.experience = calculate_experience(information_form.cleaned_data['level'])
                 character.proficiency_bonus = calculate_proficiency_bonus(information_form.cleaned_data['level'])
+                character.player_name = character.player.user.username
                 information_form.save()
                 return redirect('choose_features', character_id=character.id)
         except ValidationError as e:
@@ -240,25 +243,23 @@ def choose_items(request, character_id):
         if total_cost > character.money:
             return HttpResponseNotFound('Слишком большая стоимость. Попробуйте закупть другие предметы')
         else:
+            character.money = character.money - total_cost
+            character.armor.set(selected_armors)
+            character.weapons.set(selected_weapons)
+            character.save()
 
-            form = ItemsForm(request.POST, prefix='form')
-
-            if form.is_valid():
-
-                form.save()
-
-                context = {
-                    'form': form,
-                    'menu': menu,
-                    'character': character,
-                    'total_cost': total_price,
-                    'armors': all_armor,
-                    'weapons': all_weapons,
-                    'gold': money.get('gold'),
-                    'silver': money.get('silver'),
-                    'copper': money.get('copper')
-                }
-                return render(request, 'character/choose_items.html', context=context)
+            context = {
+                'menu': menu,
+                'character': character,
+                'total_cost': total_price,
+                'character_id': character_id,
+                'armors': all_armor,
+                'weapons': all_weapons,
+                'gold': money.get('gold'),
+                'silver': money.get('silver'),
+                'copper': money.get('copper')
+            }
+            return HttpResponseRedirect(reverse('home'))
     else:
         form = ItemsForm()
 
@@ -296,3 +297,79 @@ def show_character(request, character_id):
     }
 
     return render(request, 'character/character.html', context=context)
+
+
+def show_character_list(request):
+    if request.user.is_authenticated:
+        players_characters = Character.objects.filter(player=request.user.player)
+        context = {
+            'players_characters': players_characters,
+        }
+        return render(request, 'character/character_list.html', context=context)
+    return render(request, 'character/character_list.html')
+
+
+def show_users_character_list(request, character_id):
+    character = get_object_or_404(Character, pk=character_id)
+    strength = character.characteristics.get('Сила')
+    dexterity = character.characteristics.get('Ловкость', 0)
+    physique = character.characteristics.get('Телосложение', 0)
+    intelligence = character.characteristics.get('Интеллект', 0)
+    wisdom = character.characteristics.get('Мудрость', 0)
+    charisma = character.characteristics.get('Харизма', 0)
+
+    context = {
+        'character': character,
+        'strength': strength,
+        'dexterity': dexterity,
+        'physique': physique,
+        'intelligence': intelligence,
+        'wisdom': wisdom,
+        'charisma': charisma,
+    }
+    return render(request, 'character/character_list.html', context=context)
+
+
+def login_user(request):
+    if request.method == "POST":
+        form = LoginUserForm(request.POST)
+
+        if form.is_valid():
+            cd = form.cleaned_data
+            user = authenticate(request, username=cd['username'], password=cd['password'])
+
+            if user and user.is_active:
+                login(request, user)
+                return HttpResponseRedirect(reverse('home'))
+
+    else:
+        form = LoginUserForm()
+    return render(request, 'character/login.html', {'form': form})
+
+
+def logout_user(request):
+    logout(request)
+    return HttpResponseRedirect(reverse('login_user'))
+
+
+def registration(request):
+    if request.method == "POST":
+        form = RegistrationForm(request.POST)
+
+        if form.is_valid():
+            user = form.save()
+            player = Player(user=user)
+            player.save()
+
+            login(request, user)
+
+            return HttpResponseRedirect(reverse('home'))
+
+    else:
+        form = RegistrationForm()
+
+    context = {
+        "menu": menu,
+        'form': form,
+    }
+    return render(request, 'character/registration.html', context=context)

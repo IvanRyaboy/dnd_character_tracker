@@ -1,0 +1,457 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Character list</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+  <link rel="stylesheet" href="{% static 'character/css/styles.css' %}" type="text/css">
+</head>
+<body>
+<p>Вы можете выбрать персонажа для автозаполнения листа персонажа:</p>
+{% for character in players_characters %}
+<li>{{ character }}</li>
+{% endfor %}
+<form class="charsheet">
+  <header>
+    <section class="charname">
+      <label for="charname">Имя персонажа</label>
+      <input id="charname" name="charname" value="{{ character.character_name }}"/>
+    </section>
+    <section class="misc">
+      <ul>
+        <li>
+          <label for="classlevel">Класс и уровень</label>
+          <input id="classlevel" name="classlevel" value="{{ character.character_class }}" />
+        </li>
+        <li>
+          <label for="background">Предыстория</label>
+          <input id="background" name="background" value="{{ character.background }}" />
+        </li>
+        <li>
+          <label for="playername">Имя игрока</label>
+          <input id="playername" name="playername" value="{{ character.player.user.username }}">
+        </li>
+        <li>
+          <label for="race">Раса</label>
+          <input id="race" name="race" value="{{ character.race }}" />
+        </li>
+        <li>
+          <label for="alignment">Мировоззрение</label>
+          <input id="alignment" name="alignment" value="{{ character.alignment }}" />
+        </li>
+        <li>
+          <label for="experiencepoints">Очки опыта</label>
+          <input id="experiencepoints" name="experiencepoints" placeholder="" />
+        </li>
+      </ul>
+    </section>
+  </header>
+  <main>
+    <section>
+      <section class="attributes">
+        <div class="scores">
+          <ul>
+            <li>
+              <div class="score">
+                <label for="Strengthscore">Сила</label>
+                <input id="Strengthscore" name="Strengthscore" />
+              </div>
+              <div class="modifier">
+                <input id="Strengthmod" name="Strengthmod" />
+              </div>
+            </li>
+            <li>
+              <div class="score">
+                <label for="Dexterityscore">Ловкость</label>
+                <input id="Dexterityscore" name="Dexterityscore" />
+              </div>
+              <div class="modifier">
+                <input id="Dexteritymod" name="Dexteritymod" />
+              </div>
+            </li>
+            <li>
+              <div class="score">
+                <label for="Constitutionscore">Телосложнеие</label>
+                <input id="Constitutionscore" name="Constitutionscore" />
+              </div>
+              <div class="modifier">
+                <input id="Constitutionmod" name="Constitutionmod" />
+              </div>
+            </li>
+            <li>
+              <div class="score">
+                <label for="Wisdomscore">Мудрость</label>
+                <input id="Wisdomscore" name="Wisdomscore" />
+              </div>
+              <div class="modifier">
+                <input id="Wisdommod" name="Wisdommod" />
+              </div>
+            </li>
+            <li>
+              <div class="score">
+                <label for="Intelligencescore">Интеллект</label>
+                <input id="Intelligencescore" name="Intelligencescore" />
+              </div>
+              <div class="modifier">
+                <input id="Intelligencemod" name="Intelligencemod" />
+              </div>
+            </li>
+            <li>
+              <div class="score">
+                <label for="Charismascore">Харизма</label>
+                <input id="Charismascore" name="Charismascore" />
+              </div>
+              <div class="modifier">
+                <input id="Charismamod" name="Charismamod" />
+              </div>
+            </li>
+          </ul>
+        </div>
+        <div class="attr-applications">
+          <div class="inspiration box">
+            <div class="label-container">
+              <label for="inspiration">Вдохновение</label>
+            </div>
+            <input id="inspiration" name="inspiration" type="checkbox" />
+          </div>
+          <div class="proficiencybonus box">
+            <div class="label-container">
+              <label for="proficiencybonus">Бонус мастерства</label>
+            </div>
+            <input id="proficiencybonus" name="proficiencybonus" />
+          </div>
+          <div class="saves list-section box">
+            <ul>
+              <li>
+                <label for="Strength-save">Сила</label>
+                <input id="Strength-save" name="Strength-save" type="text" />
+                <input name="Strength-save-prof" type="checkbox" />
+              </li>
+              <li>
+                <label for="Dexterity-save">Ловкость</label>
+                <input id="Dexterity-save" name="Dexterity-save" type="text" />
+                <input name="Dexterity-save-prof" type="checkbox" />
+              </li>
+              <li>
+                <label for="Constitution-save">Телосложение</label>
+                <input id="Constitution-save" name="Constitution-save" type="text" />
+                <input name="Constitution-save-prof" type="checkbox" />
+              </li>
+              <li>
+                <label for="Wisdom-save">Мудрость</label>
+                <input id="Wisdom-save" name="Wisdom-save" type="text" />
+                <input name="Wisdom-save-prof" type="checkbox" />
+              </li>
+              <li>
+                <label for="Intelligence-save">Интеллект</label>
+                <input id="Intelligence-save" name="Intelligence-save" type="text" />
+                <input name="Intelligence-save-prof" type="checkbox" />
+              </li>
+              <li>
+                <label for="Charisma-save">Харизма</label>
+                <input id="Charisma-save" name="Charisma-save" type="text" />
+                <input name="Charisma-save-prof" type="checkbox" />
+              </li>
+            </ul>
+            <div class="label">
+              Спасброски
+            </div>
+          </div>
+          <div class="skills list-section box">
+            <ul>
+              <li>
+                <label for="Acrobatics">Акробатика <span class="skill">(Лов)</span></label>
+                <input id="Acrobatics" name="Acrobatics" type="text" />
+                <input name="Acrobatics-prof" type="checkbox" />
+              </li>
+              <li>
+                <label for="AnimalHandling">Уход за животными <span class="skill">(Муд)</span></label>
+                <input id="AnimalHandling" name="Animal Handling" type="text" />
+                <input name="Animal Handling-prof" type="checkbox" />
+              </li>
+              <li>
+                <label for="Arcana">Магия <span class="skill">(Инт)</span></label>
+                <input id="Arcana" name="Arcana" type="text" />
+                <input name="Arcana-prof" type="checkbox" />
+              </li>
+              <li>
+                <label for="Athletics">Атлетика <span class="skill">(Сил)</span></label>
+                <input id="Athletics" name="Athletics" type="text" />
+                <input name="Athletics-prof" type="checkbox" />
+              </li>
+              <li>
+                <label for="Deception">Обман <span class="skill">(Хар)</span></label>
+                <input id="Deception" name="Deception" type="text" />
+                <input name="Deception-prof" type="checkbox" />
+              </li>
+              <li>
+                <label for="History">История <span class="skill">(Инт)</span></label>
+                <input id="History" name="History" type="text" />
+                <input name="History-prof" type="checkbox" />
+              </li>
+              <li>
+                <label for="Insight">Прорицательность <span class="skill">(Муд)</span></label>
+                <input id="Insight" name="Insight" type="text" />
+                <input name="Insight-prof" type="checkbox" />
+              </li>
+              <li>
+                <label for="Intimidation">Запугивание <span class="skill">(Хар)</span></label>
+                <input id="Intimidation" name="Intimidation" type="text" />
+                <input name="Intimidation-prof" type="checkbox" />
+              </li>
+              <li>
+                <label for="Investigation">Расследование <span class="skill">(Инт)</span></label>
+                <input id="Investigation" name="Investigation" type="text" />
+                <input name="Investigation-prof" type="checkbox" />
+              </li>
+              <li>
+                <label for="Medicine">Медицина <span class="skill">(Муд)</span></label>
+                <input id="Medicine" name="Medicine" type="text" />
+                <input name="Medicine-prof" type="checkbox" />
+              </li>
+              <li>
+                <label for="Nature">Природа <span class="skill">(Инт)</span></label>
+                <input id="Nature" name="Nature" type="text" />
+                <input name="Nature-prof" type="checkbox" />
+              </li>
+              <li>
+                <label for="Perception">Восприятие <span class="skill">(Муд)</span></label>
+                <input id="Perception" name="Perception" type="text" />
+                <input name="Perception-prof" type="checkbox" />
+              </li>
+              <li>
+                <label for="Performance">Выступление <span class="skill">(Хар)</span></label>
+                <input id="Performance" name="Performance" type="text" />
+                <input name="Performance-prof" type="checkbox" />
+              </li>
+              <li>
+                <label for="Persuasion">Убеждение <span class="skill">(Хар)</span></label>
+                <input id="Persuasion" name="Persuasion" type="text" />
+                <input name="Persuasion-prof" type="checkbox" />
+              </li>
+              <li>
+                <label for="Religion">Религия <span class="skill">(Инт)</span></label>
+                <input id="Religion" name="Religion" type="text" />
+                <input name="Religion-prof" type="checkbox" />
+              </li>
+              <li>
+                <label for="SleightOfHand">Ловкость рук <span class="skill">(Лов)</span></label>
+                <input id="SleightOfHand" name="Sleight of Hand" type="text" />
+                <input name="Sleight of Hand-prof" type="checkbox" />
+              </li>
+              <li>
+                <label for="Stealth">Скрытность <span class="skill">(Лов)</span></label>
+                <input id="Stealth" name="Stealth" type="text" />
+                <input name="Stealth-prof" type="checkbox" />
+              </li>
+              <li>
+                <label for="Survival">Выживание <span class="skill">(Муд)</span></label>
+                <input id="Survival" name="Survival" type="text" />
+                <input name="Survival-prof" type="checkbox" />
+              </li>
+            </ul>
+            <div class="label">
+              Навыки
+            </div>
+          </div>
+        </div>
+      </section>
+      <div class="passive-perception box">
+        <div class="label-container">
+          <label for="passiveperception">Пассивная мудрость (Восприятие)</label>
+        </div>
+        <input id="passiveperception" name="passiveperception" />
+      </div>
+      <div class="otherprofs box textblock">
+        <label for="otherprofs">Другие умения и языки</label>
+        <textarea id="otherprofs" name="otherprofs"></textarea>
+      </div>
+    </section>
+    <section>
+      <section class="combat">
+        <div class="armorclass">
+          <div>
+            <label for="ac">Класс защиты</label>
+            <input id="ac" name="ac" type="text" />
+          </div>
+        </div>
+        <div class="initiative">
+          <div>
+            <label for="initiative">Инициатива</label>
+            <input id="initiative" name="initiative" type="text" />
+          </div>
+        </div>
+        <div class="speed">
+          <div>
+            <label for="speed">Скорость</label>
+            <input id="speed" name="speed" type="text" />
+          </div>
+        </div>
+        <div class="hp">
+          <div class="regular">
+            <div class="max">
+              <label for="maxhp">Максимальные очки жизни</label>
+              <input id="maxhp" name="maxhp" type="text" />
+            </div>
+            <div class="current">
+              <label for="currenthp">Текущие очки жизни</label>
+              <input id="currenthp" name="currenthp" type="text" />
+            </div>
+          </div>
+          <div class="temporary">
+            <label for="temphp">Временные очки жизни</label>
+            <input id="temphp" name="temphp" type="text" />
+          </div>
+        </div>
+        <div class="hitdice">
+          <div>
+            <div class="total">
+              <label for="totalhd">Всего</label>
+              <input id="totalhd" name="totalhd" type="text" />
+            </div>
+            <div class="remaining">
+              <label for="remaininghd">Кость жизней</label>
+              <input id="remaininghd" name="remaininghd" type="text" value="{{ character.character_class.hp_dice }}"/>
+            </div>
+          </div>
+        </div>
+        <div class="deathsaves">
+          <div>
+            <div class="label">
+              <label>Спасброски смерти</label>
+            </div>
+            <div class="marks">
+              <div class="deathsuccesses">
+                <label>Успешные</label>
+                <div class="bubbles">
+                  <input name="deathsuccess1" type="checkbox" />
+                  <input name="deathsuccess2" type="checkbox" />
+                  <input name="deathsuccess3" type="checkbox" />
+                </div>
+              </div>
+              <div class="deathfails">
+                <label>Проваленные</label>
+                <div class="bubbles">
+                  <input name="deathfail1" type="checkbox" />
+                  <input name="deathfail2" type="checkbox" />
+                  <input name="deathfail3" type="checkbox" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="attacksandspellcasting">
+        <div>
+          <label>Атаки и заклинания</label>
+          <table>
+            <thead>
+              <tr>
+                <th>
+                  Название
+                </th>
+                <th>
+                  Бонус атаки
+                </th>
+                <th>
+                  Урон/Тип
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <input name="atkname1" type="text" />
+                </td>
+                <td>
+                  <input name="atkbonus1" type="text" />
+                </td>
+                <td>
+                  <input name="atkdamage1" type="text" />
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <input name="atkname2" type="text" />
+                </td>
+                <td>
+                  <input name="atkbonus2" type="text" />
+                </td>
+                <td>
+                  <input name="atkdamage2" type="text" />
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <input name="atkname3" type="text" />
+                </td>
+                <td>
+                  <input name="atkbonus3" type="text" />
+                </td>
+                <td>
+                  <input name="atkdamage3" type="text" />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <textarea></textarea>
+        </div>
+      </section>
+      <section class="equipment">
+        <div>
+          <label>Снаряжение</label>
+          <div class="money">
+            <ul>
+              <li>
+                <label for="cp">мм</label>
+                <input id="cp" name="cp" />
+              </li>
+              <li>
+                <label for="sp">см</label>
+                <input id="sp" name="sp" />
+              </li>
+              <li>
+                <label for="gp">зм</label>
+                <input id="gp" name="gp" />
+              </li>
+              <li>
+                <label for="pp">пм</label>
+                <input id="pp" name="pp" />
+              </li>
+            </ul>
+          </div>
+          <textarea placeholder="Список снаряжения"></textarea>
+        </div>
+      </section>
+    </section>
+    <section>
+      <section class="flavor">
+        <div class="personality">
+          <label for="personality">Личность</label>
+          <textarea id="personality" name="personality"></textarea>
+        </div>
+        <div class="ideals">
+          <label for="ideals">Идеалы</label>
+          <textarea id="ideals" name="ideals"></textarea>
+        </div>
+        <div class="bonds">
+          <label for="bonds">Привязанности</label>
+          <textarea id="bonds" name="bonds"></textarea>
+        </div>
+        <div class="flaws">
+          <label for="flaws">Слабости</label>
+          <textarea id="flaws" name="flaws"></textarea>
+        </div>
+      </section>
+      <section class="features">
+        <div>
+          <label for="features">Особенности</label>
+          <textarea id="features" name="features"></textarea>
+        </div>
+      </section>
+    </section>
+  </main>
+</form>
+</body>
+</html>

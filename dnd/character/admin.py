@@ -66,3 +66,9 @@ class ArmorAdmin(admin.ModelAdmin):
     list_display = ('id', 'name')
     list_display_links = ('id', 'name')
     ordering = ['type']
+
+
+@admin.register(Player)
+class PlayerAdmin(admin.ModelAdmin):
+    list_display = ('user',)
+    ordering = ['id',]

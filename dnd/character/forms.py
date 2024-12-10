@@ -20,7 +20,7 @@ class InformationForm(forms.ModelForm):
                                             required=False)
 
     def __init__(self, *args, **kwargs):
-        character = kwargs.pop('instance', None)
+        character = kwargs.get('instance', None)
         super(InformationForm, self).__init__(*args, **kwargs)
 
         if character is not None:
@@ -29,7 +29,7 @@ class InformationForm(forms.ModelForm):
 
     class Meta:
         model = Character
-        fields = ['character_name', 'background', 'alignment', 'player_name', 'level', 'skills', 'spells']
+        fields = ['character_name', 'background', 'alignment', 'level', 'skills', 'spells']
 
 
 class PurchaseForm(forms.Form):
@@ -57,12 +57,24 @@ class PurchaseForm(forms.Form):
 
 
 class ItemsForm(forms.ModelForm):
-    armor = forms.ModelMultipleChoiceField(queryset=Armor.objects.all(),
-                                           required=False, widget=forms.CheckboxSelectMultiple)
-    weapons = forms.ModelMultipleChoiceField(queryset=Weapons.objects.all(),
-                                             required=False, widget=forms.CheckboxSelectMultiple)
-
     class Meta:
         model = Character
         fields = ['armor', 'weapons']
+        widgets = {
+            "armor": forms.CheckboxSelectMultiple,
+            "weapons": forms.CheckboxSelectMultiple
+        }
+
+
+class LoginUserForm(forms.Form):
+    username = forms.CharField(label='Имя пользователя',
+                               widget=forms.TextInput(attrs={'class': 'form-input'}))
+    password = forms.CharField(label='Пароль',
+                               widget=forms.PasswordInput(attrs={'class': 'form-input'}))
+
+
+class RegistrationForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'password']
 

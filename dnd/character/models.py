@@ -3,8 +3,16 @@ import random
 from django.db import models
 from django.urls import reverse
 from django.core.validators import MaxValueValidator, MinValueValidator
+from django.contrib.auth.models import User
 from django.contrib.postgres.fields import ArrayField
 from .functions import convert_money, get_alignment_list, get_backgrounds_list
+
+
+class Player(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.user.username
 
 
 class CharacterClass(models.Model):
@@ -173,6 +181,10 @@ class Character(models.Model):
                                 default=random.randint(1, 4) * 3000, null=True)
     weapons = models.ManyToManyField(Weapons, related_name='character', verbose_name='Оружие', blank=True, null=True)
     armor = models.ManyToManyField(Armor, related_name='character', verbose_name='Доспехи', blank=True, null=True)
+    player = models.ForeignKey(Player, on_delete=models.CASCADE)
 
     def get_absolute_url(self):
         return reverse('show_character', kwargs={'character_id': self.pk})
+
+    def __str__(self):
+        return self.character_name
