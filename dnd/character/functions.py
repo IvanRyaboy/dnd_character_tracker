@@ -40,6 +40,16 @@ def get_alignment_list():
     return alignment_list
 
 
+def get_characteristics_from_dict(characteristics):
+    strength = characteristics.get('Сила', 0)
+    dexterity = characteristics.get('Ловкость', 0)
+    physique = characteristics.get('Телосложение', 0)
+    intelligence = characteristics.get('Интеллект', 0)
+    wisdom = characteristics.get('Мудрость', 0)
+    charisma = characteristics.get('Харизма', 0)
+    return strength, dexterity, physique, intelligence, wisdom, charisma
+
+
 def translate_background(background):
     backgrounds = get_backgrounds_list()
     for background_en, background_ru in backgrounds:

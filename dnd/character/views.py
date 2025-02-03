@@ -15,7 +15,7 @@ def main_menu(request):
 
 
 def classes(request):
-    all_classes = CharacterClass.objects.all()
+    all_classes = CharacterClass.objects.all().order_by('name')
     return render(request, 'character/classes.html', {'classes': all_classes, 'menu': menu})
 
 
@@ -33,7 +33,7 @@ def spells(request):
 
 def show_class(request, class_slug):
     character_class = get_object_or_404(CharacterClass, slug=class_slug)
-    info = character_class.info
+    info = get_object_or_404(ClassInformation, character_class=character_class)
 
     context = {
         'class': character_class,
@@ -46,7 +46,7 @@ def show_class(request, class_slug):
 
 def show_race(request, race_slug):
     race = get_object_or_404(Race, slug=race_slug)
-    info = race.info
+    info = get_object_or_404(RaceInformation, race=race)
 
     context = {
         'race': race,
@@ -95,7 +95,8 @@ def choose_affiliation(request):
 
         if affiliation_form.is_valid():
             character = affiliation_form.save(commit=False)
-            character.player = get_object_or_404(Player, user=request.user)
+            if request.user in User.objects.all():
+                character.player = get_object_or_404(Player, user=request.user)
             character.save()
 
             context = {
@@ -129,7 +130,10 @@ def choose_information(request, character_id):
             if information_form.is_valid():
                 character.experience = calculate_experience(information_form.cleaned_data['level'])
                 character.proficiency_bonus = calculate_proficiency_bonus(information_form.cleaned_data['level'])
-                character.player_name = character.player.user.username
+                if character.player:
+                    character.player_name = character.player.user.username
+                else:
+                    character.player_name = ""
                 information_form.save()
                 return redirect('choose_features', character_id=character.id)
         except ValidationError as e:
@@ -149,12 +153,7 @@ def choose_features(request, character_id):
     abil_score_inc_dict = race.abil_score_inc
     character_class = CharacterClass.objects.get(name=character.character_class)
 
-    strength = abil_score_inc_dict.get('Сила', 0)
-    dexterity = abil_score_inc_dict.get('Ловкость', 0)
-    physique = abil_score_inc_dict.get('Телосложение', 0)
-    intelligence = abil_score_inc_dict.get('Интеллект', 0)
-    wisdom = abil_score_inc_dict.get('Мудрость', 0)
-    charisma = abil_score_inc_dict.get('Харизма', 0)
+    strength, dexterity, physique, intelligence, wisdom, charisma = get_characteristics_from_dict(abil_score_inc_dict)
 
     if request.method == "POST":
         form = PurchaseForm(request.POST, prefix='form')
@@ -311,12 +310,8 @@ def show_character_list(request):
 
 def show_users_character_list(request, character_id):
     character = get_object_or_404(Character, pk=character_id)
-    strength = character.characteristics.get('Сила')
-    dexterity = character.characteristics.get('Ловкость', 0)
-    physique = character.characteristics.get('Телосложение', 0)
-    intelligence = character.characteristics.get('Интеллект', 0)
-    wisdom = character.characteristics.get('Мудрость', 0)
-    charisma = character.characteristics.get('Харизма', 0)
+    strength, dexterity, physique, intelligence, wisdom, charisma = get_characteristics_from_dict(
+                                                                        character.characteristics)
 
     context = {
         'character': character,

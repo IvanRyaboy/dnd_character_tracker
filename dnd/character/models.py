@@ -181,7 +181,7 @@ class Character(models.Model):
                                 default=random.randint(1, 4) * 3000, null=True)
     weapons = models.ManyToManyField(Weapons, related_name='character', verbose_name='Оружие', blank=True, null=True)
     armor = models.ManyToManyField(Armor, related_name='character', verbose_name='Доспехи', blank=True, null=True)
-    player = models.ForeignKey(Player, on_delete=models.CASCADE)
+    player = models.ForeignKey(Player, on_delete=models.CASCADE, null=True )
 
     def get_absolute_url(self):
         return reverse('show_character', kwargs={'character_id': self.pk})
