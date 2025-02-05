@@ -18,6 +18,7 @@ urlpatterns = [
     path('characters/<int:character_id>/', show_character, name='show_character'),
     path('character_list/', show_character_list, name='show_character_list'),
     path('character_list/<int:character_id>/', show_users_character_list, name='show_users_character_list'),
+    path('interactive_list/<int:character_id>/', show_users_interactive_list, name='show_users_interactive_list'),
     path('login/', login_user, name='login_user'),
     path('logout/', logout_user, name='logout_user'),
     path('registration/', registration, name='registration'),

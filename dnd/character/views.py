@@ -368,3 +368,12 @@ def registration(request):
         'form': form,
     }
     return render(request, 'character/registration.html', context=context)
+
+
+def show_users_interactive_list(request, character_id):
+    character = get_object_or_404(Character, pk=character_id)
+
+    context = {
+        'character': character,
+    }
+    return render(request, 'character/interactive_list.html', context=context)

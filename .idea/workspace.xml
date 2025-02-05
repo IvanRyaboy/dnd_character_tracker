@@ -5,12 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="093ffa7c-f360-47ef-a9c7-3d9016f2f3fc" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/dnd/character/migrations/0014_alter_character_money_alter_character_player.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dnd/todo.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dnd/character/templates/character/interactive_list.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dnd/character/functions.py" beforeDir="false" afterPath="$PROJECT_DIR$/dnd/character/functions.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dnd/character/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/dnd/character/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dnd/character/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/dnd/character/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dnd/character/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/dnd/character/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dnd/todo.txt" beforeDir="false" afterPath="$PROJECT_DIR$/dnd/todo.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -46,7 +45,7 @@
     &quot;Python.runserver.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;crate__character&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;interactive__character__list&quot;,
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
     &quot;last_opened_file_path&quot;: &quot;C:/Users/ivanr/PycharmProjects/Mtg_news_parser&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pathVariables&quot;
