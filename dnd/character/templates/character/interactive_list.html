@@ -18,7 +18,7 @@
       <ul>
         <li>
           <label for="classlevel">Класс и уровень</label>
-          <input id="classlevel" name="classlevel" value="{{ character.character_class }}" />
+          <input id="classlevel" name="classlevel" value="{{ character.character_class }} {{ character.level }}" />
         </li>
         <li>
           <label for="background">Предыстория</label>
@@ -273,38 +273,76 @@
           </div>
         </div>
         <div class="initiative">
-          <div>
-            <label for="initiative">Инициатива</label>
-            <input id="initiative" name="initiative" type="text" value="{{ character.modifiers.Ловкость }}"/>
-          </div>
-        </div>
+  <div>
+    <label for="initiative">Инициатива</label>
+    <input id="initiative" name="initiative" type="text" value="{{ character.modifiers.Ловкость }}" readonly/>
+  </div>
+</div>
+
+<script>
+  document.querySelector('.initiative').addEventListener('click', function() {
+    // AJAX request to Django view, passing the CSRF token
+    fetch('/calculate_initiative/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken'), // Function to get the CSRF token
+        },
+        body: JSON.stringify({
+            'character_id': {{ character.id }} // Pass the character's ID
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+      document.getElementById('initiative').value = data.initiative;
+    });
+  });
+
+  // Function to get the CSRF token from the cookie
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            let cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+  }
+</script>
+
         <div class="speed">
           <div>
             <label for="speed">Скорость</label>
-            <input id="speed" name="speed" type="text" />
+            <input id="speed" name="speed" type="text" value="{{ speed }}"/>
           </div>
         </div>
         <div class="hp">
           <div class="regular">
             <div class="max">
               <label for="maxhp">Максимальные очки жизни</label>
-              <input id="maxhp" name="maxhp" type="text" />
+              <input id="maxhp" name="maxhp" type="text" value="{{ character_max_hp }}"/>
             </div>
             <div class="current">
               <label for="currenthp">Текущие очки жизни</label>
-              <input id="currenthp" name="currenthp" type="text" />
+              <input id="currenthp" name="currenthp" type="text" value="{{ character_max_hp }}"/>
             </div>
           </div>
           <div class="temporary">
             <label for="temphp">Временные очки жизни</label>
-            <input id="temphp" name="temphp" type="text" />
+            <input id="temphp" name="temphp" type="text" value="0"/>
           </div>
         </div>
         <div class="hitdice">
           <div>
             <div class="total">
               <label for="totalhd">Всего</label>
-              <input id="totalhd" name="totalhd" type="text" />
+              <input id="totalhd" name="totalhd" type="text" value="{{ character.level }}"/>
             </div>
             <div class="remaining">
               <label for="remaininghd">Кость жизней</label>
@@ -319,7 +357,7 @@
             </div>
             <div class="marks">
               <div class="deathsuccesses">
-                <label>Успешные</label>
+                <label>Уд</label>
                 <div class="bubbles">
                   <input name="deathsuccess1" type="checkbox" />
                   <input name="deathsuccess2" type="checkbox" />
@@ -327,7 +365,7 @@
                 </div>
               </div>
               <div class="deathfails">
-                <label>Проваленные</label>
+                <label>Неуд</label>
                 <div class="bubbles">
                   <input name="deathfail1" type="checkbox" />
                   <input name="deathfail2" type="checkbox" />
@@ -341,103 +379,221 @@
       <section class="attacksandspellcasting">
         <div>
           <label>Атаки и заклинания</label>
-          <table>
-            <thead>
-              <tr>
-                <th>
-                  Название
-                </th>
-                <th>
-                  Бонус атаки
-                </th>
-                <th>
-                  Урон/Тип
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>
-                  <input name="atkname1" type="text" />
-                </td>
-                <td>
-                  <input name="atkbonus1" type="text" />
-                </td>
-                <td>
-                  <input name="atkdamage1" type="text" />
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <input name="atkname2" type="text" />
-                </td>
-                <td>
-                  <input name="atkbonus2" type="text" />
-                </td>
-                <td>
-                  <input name="atkdamage2" type="text" />
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <input name="atkname3" type="text" />
-                </td>
-                <td>
-                  <input name="atkbonus3" type="text" />
-                </td>
-                <td>
-                  <input name="atkdamage3" type="text" />
-                </td>
-              </tr>
-            </tbody>
-          </table>
-          <textarea></textarea>
+          <form method="post" id="spell_form">
+            {% csrf_token %}
+            <div>
+              {{ spell_form.spell_type.label_tag }}
+              {{ spell_form.spell_type }}
+            </div>
+            <div id="id_spell_container">
+        {% if spell_form.spell.field.queryset.exists %}
+            {{ spell_form.spell.label_tag }}
+            {{ spell_form.spell }}
+        {% else %}
+            <p>Пожалуйста, выберите тип заклинания</p>
+        {% endif %}
+    </div>
+            <button type="submit">Добавить заклинание</button>
+          </form>
+          <script>
+document.querySelector('.spell-type-selector').addEventListener('change', function() {
+    const spellType = this.value;
+    const form = document.getElementById('spell-form');
+    const formData = new FormData(spell_form);
+
+    fetch(window.location.href, {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+        }
+    })
+    .then(response => response.text())
+    .then(html => {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+        document.getElementById('id_spell_container').innerHTML =
+            doc.getElementById('id_spell_container').innerHTML;
+    });
+});
+</script>
         </div>
       </section>
       <section class="equipment">
-        <div>
-          <label>Снаряжение</label>
-          <div class="money">
-            <ul>
-              <li>
-                <label for="cp">мм</label>
-                <input id="cp" name="cp" value="{{ character.money }}"/>
-              </li>
-              <li>
-                <label for="sp">см</label>
-                <input id="sp" name="sp" />
-              </li>
-              <li>
-                <label for="gp">зм</label>
-                <input id="gp" name="gp" />
-              </li>
-              <li>
-                <label for="pp">пм</label>
-                <input id="pp" name="pp" />
-              </li>
-            </ul>
+  <div>
+    <label>Снаряжение</label>
+    <div class="money">
+      <ul>
+        <li>
+          <label for="cp">мм</label>
+          <input id="cp" name="cp" value="{{ coins.copper }}" readonly/>
+        </li>
+        <li>
+          <label for="sp">см</label>
+          <input id="sp" name="sp" value="{{ coins.silver }}" readonly/>
+        </li>
+        <li>
+          <label for="gp">зм</label>
+          <input id="gp" name="gp" value="{{ coins.gold }}" readonly/>
+        </li>
+        <li>
+          <label for="pp">пм</label>
+          <input id="pp" name="pp" value="{{ coins.platinum }}" readonly/>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Плашка "Добавить снаряжение" -->
+    <button id="show-equipment-form" class="btn btn-primary" onclick="toggleEquipmentForm()">Добавить снаряжение</button>
+
+    <!-- Форма добавления снаряжения (изначально скрыта) -->
+    <div id="equipment-form-container" class="hide">
+      <div class="equipment-form" style="border: 1px solid black; border-radius: 10px; padding: 10px; margin-top: 10px;">
+        <form id="add-equipment-form" onsubmit="addEquipment(event)">
+          {% csrf_token %}
+          <div style="margin-bottom: 10px;">
+            {{ equipment_form.equipment_type.label_tag }}
+            {{ equipment_form.equipment_type }}
           </div>
-          <textarea placeholder="Список снаряжения"></textarea>
-        </div>
-      </section>
+
+          <div id="weapon-selector" class="hide">
+            {{ equipment_form.weapon.label_tag }}
+            {{ equipment_form.weapon }}
+          </div>
+
+          <div id="armor-selector" class="hide">
+            {{ equipment_form.armor.label_tag }}
+            {{ equipment_form.armor }}
+          </div>
+
+          <div id="other-equipment" class="hide">
+            <div style="margin-bottom: 10px;">
+              {{ equipment_form.item_name.label_tag }}
+              {{ equipment_form.item_name }}
+            </div>
+            <div style="margin-bottom: 10px;">
+              {{ equipment_form.item_price.label_tag }}
+              {{ equipment_form.item_price }}
+            </div>
+            <div style="margin-bottom: 10px;">
+              {{ equipment_form.item_weight.label_tag }}
+              {{ equipment_form.item_weight }}
+            </div>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; margin-top: 15px;">
+            <button type="submit" class="btn btn-success">Сохранить</button>
+            <button type="button" onclick="toggleEquipmentForm()" class="btn btn-secondary">Отмена</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Список снаряжения -->
+    <textarea placeholder="Список снаряжения" readonly>
+      {% for item in character_equipment %}
+        {{ item }}
+      {% endfor %}
+    </textarea>
+  </div>
+</section>
+
+<script>
+  // Показать/скрыть форму
+  function toggleEquipmentForm() {
+    const formContainer = document.getElementById('equipment-form-container');
+    const showBtn = document.getElementById('show-equipment-form');
+
+    if (formContainer.classList.contains('hide')) {
+      formContainer.classList.remove('hide');
+      showBtn.classList.add('hide');
+    } else {
+      formContainer.classList.add('hide');
+      showBtn.classList.remove('hide');
+    }
+  }
+
+  // Обработчик изменения типа снаряжения
+  document.querySelector('select[name="equipment_type"]').addEventListener('change', function() {
+    const type = this.value;
+
+    // Скрываем все блоки
+    document.getElementById('weapon-selector').classList.add('hide');
+    document.getElementById('armor-selector').classList.add('hide');
+    document.getElementById('other-equipment').classList.add('hide');
+
+    // Показываем нужный блок
+    if (type === 'weapon') {
+      document.getElementById('weapon-selector').classList.remove('hide');
+    } else if (type === 'armor') {
+      document.getElementById('armor-selector').classList.remove('hide');
+    } else if (type === 'other') {
+      document.getElementById('other-equipment').classList.remove('hide');
+    }
+  });
+
+  // Обработчик отправки формы (AJAX)
+  function addEquipment(event) {
+    event.preventDefault();
+
+    const form = event.target;
+    const formData = new FormData(form);
+
+    fetch("{% url 'show_users_interactive_list' character.id %}", {
+      method: 'POST',
+      body: formData,
+      headers: {
+        'X-Requested-With': 'XMLHttpRequest',
+        'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+      }
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        // Обновляем список снаряжения
+        const equipmentTextarea = document.querySelector('.equipment textarea');
+        equipmentTextarea.value = data.equipment_list.join('\n');
+
+        // Обновляем деньги
+        document.getElementById('cp').value = data.coins.copper;
+        document.getElementById('sp').value = data.coins.silver;
+        document.getElementById('gp').value = data.coins.gold;
+        document.getElementById('pp').value = data.coins.platinum;
+
+        // Сбрасываем и скрываем форму
+        form.reset();
+        toggleEquipmentForm();
+      } else {
+        alert('Ошибка при добавлении снаряжения: ' + data.error);
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      alert('Произошла ошибка при отправке формы');
+    });
+  }
+</script>
     </section>
+
+
     <section>
       <section class="flavor">
         <div class="personality">
           <label for="personality">Личность</label>
-          <textarea id="personality" name="personality"></textarea>
+          <textarea id="personality" name="personality" placeholder="Личность персонажа — ключевые черты, главный идеал, что он больше всего ценит, и основной недостаток."></textarea>
         </div>
         <div class="ideals">
           <label for="ideals">Идеалы</label>
-          <textarea id="ideals" name="ideals"></textarea>
+          <textarea id="ideals" name="ideals" placeholder="Идеалы персонажа — это его внутренние убеждения и стремления. Выберите то, во что он верит и к чему стремится."></textarea>
         </div>
         <div class="bonds">
           <label for="bonds">Привязанности</label>
-          <textarea id="bonds" name="bonds"></textarea>
+          <textarea id="bonds" name="bonds" placeholder="Привязанности персонажа — это то, что ему дорого и что определяет его действия, будь то семья, друзья или родина. "></textarea>
         </div>
         <div class="flaws">
           <label for="flaws">Слабости</label>
-          <textarea id="flaws" name="flaws"></textarea>
+          <textarea id="flaws" name="flaws" placeholder="Слабости персонажа — это его недостатки и страхи. То, что мешает ему на пути, чего он боится или к чему имеет склонность."></textarea>
         </div>
       </section>
       <section class="features">

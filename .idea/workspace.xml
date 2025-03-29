@@ -5,8 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="093ffa7c-f360-47ef-a9c7-3d9016f2f3fc" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/dnd/character/templates/character/interactive_list.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dnd/character/migrations/0015_character_max_hp_alter_character_money.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dnd/character/migrations/0018_character_equipment_alter_character_money.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dnd/character/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/dnd/character/forms.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dnd/character/functions.py" beforeDir="false" afterPath="$PROJECT_DIR$/dnd/character/functions.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dnd/character/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/dnd/character/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dnd/character/templates/character/interactive_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/dnd/character/templates/character/interactive_list.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dnd/character/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/dnd/character/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dnd/character/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/dnd/character/views.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dnd/todo.txt" beforeDir="false" afterPath="$PROJECT_DIR$/dnd/todo.txt" afterDir="false" />
@@ -47,7 +52,7 @@
     &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;interactive__character__list&quot;,
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/ivanr/PycharmProjects/Mtg_news_parser&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/ivanr/PycharmProjects/files-master/App-2-Flatmates-Bill&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pathVariables&quot;
   }
 }</component>

@@ -1,6 +1,9 @@
+# Импорт моделей из текущего пакета
 from .models import *
+import random
 
 
+# Функция возвращает список классов персонажей в формате (английское название, русское название)
 def get_classes_list():
     classes_list = [('bard', 'Бард'), ("barbarian", "Варвар"),
                     ('warrior', "Воин"), ('wizard', "Волшебник"),
@@ -12,6 +15,7 @@ def get_classes_list():
     return classes_list
 
 
+# Функция возвращает список рас персонажей в формате (английское название, русское название)
 def get_races_list():
     races_list = [('dwarf', 'Дварф'), ('dragonborn', 'Драконорждённый'),
                   ('half-orc', 'Полуорк'), ('halfling', 'Полурослик'),
@@ -20,6 +24,7 @@ def get_races_list():
     return races_list
 
 
+# Функция возвращает список предысторий персонажей в формате (английское название, русское название)
 def get_backgrounds_list():
     backgrounds_list = [('artist', 'Артист'), ('homeless', 'Безпризорник'),
                         ('noble', 'Благородный'), ('guild craftsman', 'Гидьдейский ремесленник'),
@@ -31,6 +36,7 @@ def get_backgrounds_list():
     return backgrounds_list
 
 
+# Функция возвращает список мировоззрений персонажей в формате (английское название, русское название)
 def get_alignment_list():
     alignment_list = [('lawful good', 'Упорядоченно добрый'), ('neutral good', 'Добрый'),
                       ('chaotic good', 'Хаотично добрый'), ('lawful neutral', 'Упорядоченный'),
@@ -40,6 +46,7 @@ def get_alignment_list():
     return alignment_list
 
 
+# Функция извлекает значения характеристик из словаря и возвращает их
 def get_characteristics_from_dict(characteristics):
     strength = characteristics.get('Сила', 0)
     dexterity = characteristics.get('Ловкость', 0)
@@ -50,22 +57,25 @@ def get_characteristics_from_dict(characteristics):
     return strength, dexterity, physique, intelligence, wisdom, charisma
 
 
+# Функция переводит предысторию с английского на русский язык
 def translate_background(background):
     backgrounds = get_backgrounds_list()
     for background_en, background_ru in backgrounds:
         if background_en == background:
             return background_ru
-    return 'Отшельник'
+    return 'Отшельник'  # Возвращает значение по умолчанию, если перевод не найден
 
 
+# Функция переводит мировоззрение с английского на русский язык
 def translate_alignment(alignment):
     alignments = get_alignment_list()
     for alignment_en, alignment_ru in alignments:
         if alignment_en == alignment:
             return alignment_ru
-    return 'Истинно нейтрильный'
+    return 'Истинно нейтрильный'  # Возвращает значение по умолчанию, если перевод не найден
 
 
+# Функция возвращает количество опыта, необходимое для достижения определённого уровня
 def calculate_experience(level):
     level_to_exp = {
         1: 0,
@@ -92,6 +102,7 @@ def calculate_experience(level):
     return level_to_exp.get(level)
 
 
+# Функция возвращает бонус мастерства для определённого уровня
 def calculate_proficiency_bonus(level):
     proficiency_bonus = {
         1: 2,
@@ -118,6 +129,7 @@ def calculate_proficiency_bonus(level):
     return proficiency_bonus.get(level)
 
 
+# Функция рассчитывает спасброски на основе модификаторов, спасбросков класса и бонуса мастерства
 def calculate_saving_throws(modifiers, classes_saving_throws, proficiency_bonus):
     if 'Сила' in classes_saving_throws:
         strength = modifiers.get('Сила') + proficiency_bonus
@@ -151,6 +163,7 @@ def calculate_saving_throws(modifiers, classes_saving_throws, proficiency_bonus)
     return saving_throws
 
 
+# Функция возвращает максимальное количество навыков, которые может выбрать персонаж в зависимости от класса
 def get_max_skills(character):
     if character.character_class.name in ['Бард', 'Следопыт']:
         return 3
@@ -160,12 +173,59 @@ def get_max_skills(character):
         return 2
 
 
+# Функция конвертирует количество медяков в платину, золото, серебро и медяки
 def convert_money(copper):
+    platinum = copper // 1000
+    copper %= 1000
     gold = copper // 100
-    silver = (copper % 100) // 10
+    copper %= 100
+    silver = copper // 10
     copper = copper % 10
-    money = {'gold': gold, 'silver': silver, 'copper': copper}
-    return money
+    return {'platinum': platinum, 'gold': gold, 'silver': silver, 'copper': copper}
 
-def calculate_price():
-    pass
+
+# Функция рассчитывает класс брони (AC) в зависимости от типа доспеха и модификаторов
+def calculate_armor_class(armor, modifiers) -> int:
+    if armor is None:
+        return 10 + modifiers.get('Ловкость', 0)
+    if armor.type == 'Лёгкий доспех':
+        return armor.armor_class + modifiers.get('Ловкость', 0)
+    if armor.type == 'Средний доспех':
+        return armor.armor_class + min(modifiers.get('Ловкость', 0), 2)
+    if armor.type == 'Тяжелый доспех':
+        return armor.armor_class
+
+
+# Функция рассчитывает максимальное количество хитов персонажа на основе его уровня, класса и модификаторов
+def max_hp(character) -> int:
+    character_max_hp = character.character_class.hp_dice + character.modifiers.get('Телосложение', 0)
+    for _ in range(2, character.level + 1):
+        character_max_hp += (random.randint(1, character.character_class.hp_dice) +
+                             character.modifiers.get('Телосложение', 0))
+    return character_max_hp
+
+
+# Функция проверяет, превышает ли вес инвентаря максимальную грузоподъёмность персонажа
+def is_max_capacity_exceed(character) -> bool:
+    is_exceed = False
+    max_capacity = character.characteristics.get('Сила', 0) * 15
+    if character.inventory_capacity > max_capacity:
+        is_exceed = True
+    return is_exceed
+
+
+# Функция рассчитывает инициативу персонажа на основе модификатора ловкости и случайного броска кубика
+def calculate_initiative(modifiers) -> int:
+    dexterity_modifier = modifiers.get('Ловкость', 0)
+    roll = random.randint(1, 20)
+    initiative = roll + dexterity_modifier
+    return initiative
+
+
+# Функция рассчитывает текущий вес инвентаря персонажа, учитывая оружие, доспехи и остальной инвентарь
+def count_current_capacity(weapon, armor, inventory_capacity) -> int:
+    current_capacity = weapon.weight + armor.weight + inventory_capacity
+    return current_capacity
+
+
+

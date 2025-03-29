@@ -78,3 +78,109 @@ class RegistrationForm(forms.ModelForm):
         model = User
         fields = ['username', 'email', 'password']
 
+
+class EquipmentForm(forms.Form):
+    EQUIPMENT_TYPE_CHOICES = [
+        ('weapon', 'Оружие'),
+        ('armor', 'Доспехи'),
+        ('other', 'Другое снаряжение'),
+    ]
+
+    equipment_type = forms.ChoiceField(
+        choices=EQUIPMENT_TYPE_CHOICES,
+        label='Тип снаряжения',
+        widget=forms.Select(attrs={'class': 'equipment-type-selector'})
+    )
+
+    # Поля для оружия
+    weapon = forms.ModelChoiceField(
+        queryset=Weapons.objects.all(),
+        label='Выберите оружие',
+        required=False,
+        widget=forms.Select(attrs={'class': 'weapon-selector'})
+    )
+
+    # Поля для доспехов
+    armor = forms.ModelChoiceField(
+        queryset=Armor.objects.all(),
+        label='Выберите доспехи',
+        required=False,
+        widget=forms.Select(attrs={'class': 'armor-selector'})
+    )
+
+    # Поля для обычного снаряжения
+    item_name = forms.CharField(
+        max_length=100,
+        label='Название предмета',
+        required=False,
+        widget=forms.TextInput(attrs={'class': 'item-name-input'})
+    )
+    item_price = forms.IntegerField(
+        label='Цена (в медных монетах)',
+        min_value=0,
+        required=False,
+        widget=forms.NumberInput(attrs={'class': 'item-price-input'})
+    )
+    item_weight = forms.IntegerField(
+        label='Вес',
+        min_value=0,
+        required=False,
+        widget=forms.NumberInput(attrs={'class': 'item-weight-input'})
+    )
+
+    def clean(self):
+        cleaned_data = super().clean()
+        equipment_type = cleaned_data.get('equipment_type')
+
+        if equipment_type == 'weapon' and not cleaned_data.get('weapon'):
+            self.add_error('weapon', 'Пожалуйста, выберите оружие')
+        elif equipment_type == 'armor' and not cleaned_data.get('armor'):
+            self.add_error('armor', 'Пожалуйста, выберите доспехи')
+        elif equipment_type == 'other':
+            if not cleaned_data.get('item_name'):
+                self.add_error('item_name', 'Введите название предмета')
+            if cleaned_data.get('item_price') is None:
+                self.add_error('item_price', 'Введите цену предмета')
+            if cleaned_data.get('item_weight') is None:
+                self.add_error('item_weight', 'Введите вес предмета')
+
+        return cleaned_data
+
+
+class SpellForm(forms.Form):
+    SPELL_TYPE_CHOICES = [
+        ('abjuration', 'Ограждение'),
+        ('conjuration', 'Вызов'),
+        ('divination', 'Прорицание'),
+        ('enchantment', 'Очарование'),
+        ('evocation', 'Воплощение'),
+        ('illusion', 'Иллюзия'),
+        ('necromancy', 'Некромантия'),
+        ('transmutation', 'Преобразование'),
+        ('universal', 'Универсальное')
+    ]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        spell_type = self.data.get('spell_type') if not self.data else None
+        self.fields['spell_type'] = forms.ChoiceField(
+            choices=self.SPELL_TYPE_CHOICES,
+            label='Тип заклинания',
+            widget=forms.Select(attrs={
+                'class': 'spell_type_selector',
+            })
+        )
+
+        self.fields['spell'] = forms.ModelChoiceField(
+            queryset=self.get_filtered_spells(spell_type),
+            label='Выберите заклинание',
+            required=False,
+            widget=forms.Select(attrs={'id': 'spell_id'})
+        )
+
+    def get_filtered_spells(self, spell_type=None):
+        """Возвращает отфильтрованный queryset заклинаний"""
+        if spell_type and spell_type != '':
+            return Spells.objects.filter(spell_type=spell_type)
+        return Spells.objects.none()
